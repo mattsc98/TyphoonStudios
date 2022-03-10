@@ -1317,9 +1317,9 @@ GameObject:
   - component: {fileID: 1298858160}
   - component: {fileID: 1298858159}
   - component: {fileID: 1298858158}
-  - component: {fileID: 1298858157}
   - component: {fileID: 1298858161}
   - component: {fileID: 1298858163}
+  - component: {fileID: 1298858157}
   m_Layer: 0
   m_Name: TempRaft/Boat
   m_TagString: Raft
@@ -1338,8 +1338,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.6151669, y: 1.0191965, z: 1.5081004}
-  m_Center: {x: 0.08525486, y: 0.009598225, z: -0.08764272}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1298858158
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2597,7 +2597,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishingLabel: {fileID: 2064863430}
   moveSpeed: 1
-  mouseSensitivity: 1
+  mouseSensitivity: 100
 --- !u!4 &1893757970
 Transform:
   m_ObjectHideFlags: 0
