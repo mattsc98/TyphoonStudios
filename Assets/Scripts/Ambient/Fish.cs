@@ -4,36 +4,35 @@ using UnityEngine;
 
 public class Fish : MonoBehaviour
 {
+    //Variable values
     public float speed;
     public int radius;
+    public float depth;
 
+    //Script variables
     private GameObject raft;
     private Vector3 pos;
     private float time;
 
+
     void Start()
     {
         raft = GameObject.FindGameObjectWithTag("Raft");
-        radius = 12;
+
+        radius = 14;
         speed = 0.1f;
+        depth = 0.5f;
     }
-    // Update is called once per frame
+
     void FixedUpdate()
     {
-
-        float x = Waves.instance.GetWaveHeight(transform.position.x);
-        float z = Waves.instance.GetWaveHeight(transform.position.z);
-        float waveHeight = x + z;
-
         pos = transform.position;
-
         time += Time.deltaTime;
-        
-        //Will rotate around the raft slowly
-        pos.y = waveHeight;
 
-        pos.x = raft.transform.position.x + (radius * Mathf.Cos(time * speed));
-        pos.z = raft.transform.position.z + (radius * Mathf.Sin(time * speed));
+        pos.y = raft.transform.position.y - depth;
+
+        pos.x = raft.transform.position.x + (radius * (Mathf.Cos(time * speed)));
+        pos.z = raft.transform.position.z + (radius * (Mathf.Sin(time * speed)));
         gameObject.transform.position = pos;
     }
 }

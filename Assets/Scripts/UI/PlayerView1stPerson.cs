@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class PlayerView1stPerson : MonoBehaviour
 {
     //UI Objects
-    public GameObject fishingLabel;
+    // public GameObject fishingLabel;
 
     //Player variables
     public float moveSpeed;
-    public float mouseSensitivity;
-    private Camera mainCam;
+    public float lookSpeed;
+    public Camera mainCam;
 
     private float mouseX;
     private float mouseY;
@@ -21,23 +21,47 @@ public class PlayerView1stPerson : MonoBehaviour
 
     void Start()
     {
-        mainCam = Camera.main;        
+        transform.rotation = Quaternion.Euler(0, 100, 0); //Default looking location
+
+        mainCam = Camera.main;
         mainCam.transform.parent = gameObject.transform;
         mainCam.transform.localPosition = new Vector3(0, 0, 0);
-        mainCam.transform.rotation = Quaternion.Euler(0,0,0);
+        mainCam.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        moveSpeed = 5f;
-        mouseSensitivity = 5f;
+        //Get saved MoveSpeed
+        if (PlayerPrefs.HasKey("MoveSpeed"))
+        {
+            moveSpeed = PlayerPrefs.GetFloat("MoveSpeed");
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("MoveSpeed", 5); //Default value
+            moveSpeed = 5f;
+        }
+
+        //Get saved LookSpeed
+        if (PlayerPrefs.HasKey("LookSpeed"))
+        {
+            lookSpeed = PlayerPrefs.GetFloat("LookSpeed");
+        }
+        else
+        {
+            PlayerPrefs.SetFloat("LookSpeed", 5); //Default value
+            lookSpeed = 5f;
+        }
+
         mouseX = 0f;
         mouseY = 0f;
     }
 
-    // Update is called once per frame
+
     void FixedUpdate()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        mouseX -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-        mouseY += Input.GetAxis("Mouse X") * mouseSensitivity;
+
+        mouseX -= Input.GetAxis("Mouse Y") * lookSpeed;
+        mouseY += Input.GetAxis("Mouse X") * lookSpeed;
+
         gameObject.transform.rotation = Quaternion.Euler(0, mouseY, 0);
         mainCam.transform.rotation = Quaternion.Euler(mouseX, mouseY, 0);
         if (Input.GetKey("up") || Input.GetKey("w"))
@@ -59,7 +83,7 @@ public class PlayerView1stPerson : MonoBehaviour
 
 
         // if raycast hits, it checks if it hit an object with the tag Player
-        if (Physics.Raycast(mainCam.transform.position, transform.forward, out hit, 30) &&
+        /*if (Physics.Raycast(mainCam.transform.position, transform.forward, out hit, 30) &&
                     hit.collider.gameObject.CompareTag("Fish"))
         {
             fishingLabel.SetActive(true);
@@ -71,6 +95,6 @@ public class PlayerView1stPerson : MonoBehaviour
         else
         {
             fishingLabel.SetActive(false);
-        }
+        }*/
     }
 }
