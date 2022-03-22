@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Fish
   - Raft
+  - MoveMarker
+  - Water
   layers:
   - Default
   - TransparentFX

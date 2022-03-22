@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,15 +19,20 @@ public class PlayerView1stPerson : MonoBehaviour
 
     //Script variables
     private RaycastHit hit;
+    public Rigidbody rb;
 
     void Start()
     {
-        transform.rotation = Quaternion.Euler(0, 100, 0); //Default looking location
+
+        // rb = gameObject.GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
 
         mainCam = Camera.main;
         mainCam.transform.parent = gameObject.transform;
         mainCam.transform.localPosition = new Vector3(0, 0, 0);
-        mainCam.transform.rotation = Quaternion.Euler(0, 0, 0);
+        mainCam.transform.localRotation = Quaternion.Euler(0, 0, 0);
+
+        StartCoroutine(CorrectView());
 
         //Get saved MoveSpeed
         if (PlayerPrefs.HasKey("MoveSpeed"))
@@ -35,8 +41,8 @@ public class PlayerView1stPerson : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetFloat("MoveSpeed", 5); //Default value
-            moveSpeed = 5f;
+            PlayerPrefs.SetFloat("MoveSpeed", 50); //Default value
+            moveSpeed = 50f;
         }
 
         //Get saved LookSpeed
@@ -46,17 +52,24 @@ public class PlayerView1stPerson : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetFloat("LookSpeed", 5); //Default value
-            lookSpeed = 5f;
+            PlayerPrefs.SetFloat("LookSpeed", 50); //Default value
+            lookSpeed = 50f;
         }
-
-        mouseX = 0f;
-        mouseY = 0f;
     }
 
+    IEnumerator CorrectView()
+    {
+        yield return new WaitForSeconds(1); //wait one second before correcting view
+        transform.rotation = Quaternion.Euler(0, 100, 0); //Default looking location
+    }
 
     void FixedUpdate()
     {
+        
+       // Vector3 m_Input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        //Debug.Log("m_Input = " + m_Input);
+        //rb.MovePosition(transform.position + m_Input * moveSpeed * Time.deltaTime);
+
         Cursor.lockState = CursorLockMode.Locked;
 
         mouseX -= Input.GetAxis("Mouse Y") * lookSpeed;
@@ -64,8 +77,10 @@ public class PlayerView1stPerson : MonoBehaviour
 
         gameObject.transform.rotation = Quaternion.Euler(0, mouseY, 0);
         mainCam.transform.rotation = Quaternion.Euler(mouseX, mouseY, 0);
+
         if (Input.GetKey("up") || Input.GetKey("w"))
         {
+            //rb.MovePosition(transform.position + (m_Input * Time.deltaTime * moveSpeed));
             gameObject.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed);
         }
         if (Input.GetKey("down") || Input.GetKey("s"))
@@ -79,6 +94,11 @@ public class PlayerView1stPerson : MonoBehaviour
         if (Input.GetKey("right") || Input.GetKey("d"))
         {
             gameObject.transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
+        }
+
+        if (Input.GetKey("p"))
+        {
+            gameObject.GetComponent<Pick>().PickLog();
         }
 
 
