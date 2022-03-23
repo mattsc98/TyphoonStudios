@@ -19,7 +19,7 @@ public class PlayerView1stPerson : MonoBehaviour
 
     //Script variables
     private RaycastHit hit;
-    public Rigidbody rb;
+    private Rigidbody rb;
 
     void Start()
     {
@@ -72,8 +72,14 @@ public class PlayerView1stPerson : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
 
-        mouseX -= Input.GetAxis("Mouse Y") * lookSpeed;
         mouseY += Input.GetAxis("Mouse X") * lookSpeed;
+
+        if ((mouseX - Input.GetAxis("Mouse Y") * lookSpeed) < 50 && //Limit view
+            (mouseX - Input.GetAxis("Mouse Y") * lookSpeed) > - 50)
+        {
+            
+            mouseX -= Input.GetAxis("Mouse Y") * lookSpeed;
+        }        
 
         gameObject.transform.rotation = Quaternion.Euler(0, mouseY, 0);
         mainCam.transform.rotation = Quaternion.Euler(mouseX, mouseY, 0);

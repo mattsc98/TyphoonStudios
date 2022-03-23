@@ -11,6 +11,7 @@ public class HoldSpear : MonoBehaviour
     public int stabRange;
 
     private bool holding;
+    private int mask;
 
     public Vector3 holdPos;
 
@@ -23,15 +24,18 @@ public class HoldSpear : MonoBehaviour
 
     private Camera mainCam;
 
-    
+
     void Start()
     {
-        
+
         PlayerPrefs.SetInt("HasSpear", 1);//Temporary for testing (will always start with spear)
 
         //Find Essential things
         mainCam = Camera.main;
         player = GameObject.FindGameObjectWithTag("Player");
+
+        mask = LayerMask.GetMask("Interractable");
+        holdPos = new Vector3(0.4f, 0.1f, 0.4f);
 
         if (PlayerPrefs.HasKey("HasSpear"))
         {
@@ -39,8 +43,8 @@ public class HoldSpear : MonoBehaviour
         }
         else
         {
-            PlayerPrefs.SetInt("HasSpear",0); //Default, no spear
-        }        
+            PlayerPrefs.SetInt("HasSpear", 0); //Default, no spear
+        }
         if (PlayerPrefs.GetInt("HasSpear") == 1)
         {
             GetSpear();
@@ -49,20 +53,22 @@ public class HoldSpear : MonoBehaviour
         throwForce = 50f;
         despawnDist = 50;
         holdPos = new Vector3(0.4f, 0.1f, 0.4f);
+
     }
 
-    
-    
+
+
     void FixedUpdate()
     {
         Debug.DrawRay(mainCam.transform.position, mainCam.transform.forward * stabRange, Color.green, 2, false);
+
         //if (Input.GetMouseButtonDown(0)) {
         if (Input.GetKey("t")) //Throw
         {
             if (PlayerPrefs.GetInt("HasSpear") == 1)//Does not have a spear
             {
                 Throw();
-                
+
             }
         }
 
@@ -80,12 +86,13 @@ public class HoldSpear : MonoBehaviour
             {
                 Destroy(spear);
             }
-            else if(holding)
+            else if (holding)
             {
                 spear.transform.localPosition = holdPos;
-                spear.transform.rotation = mainCam.transform.rotation * Quaternion.Euler(15, 15, 0);                
+                spear.transform.rotation = mainCam.transform.rotation * Quaternion.Euler(15, 15, 0);
+                spear.transform.rotation = mainCam.transform.rotation * Quaternion.Euler(0, 90, 10);
             }
-        } 
+        }
     }
 
     public void GetSpear()
@@ -93,8 +100,10 @@ public class HoldSpear : MonoBehaviour
         PlayerPrefs.SetInt("HasSpear", 1);
         spear = Instantiate(spearPrefab);
         spear.transform.parent = player.transform;
+        spear.transform.parent = mainCam.transform;
         spear.transform.localPosition = holdPos;
-        spear.transform.rotation = Quaternion.Euler(15, 15, 0);
+        //spear.transform.rotation = Quaternion.Euler(15, 15, 0);
+        //spear.transform.rotation = Quaternion.Euler(0, 90, 10);
         spear.GetComponent<Rigidbody>().isKinematic = true;
         spear.GetComponent<Rigidbody>().useGravity = false;
         spear.GetComponent<BoxCollider>().enabled = false;
@@ -105,22 +114,24 @@ public class HoldSpear : MonoBehaviour
     {
         Debug.Log("Stabbing");
         RaycastHit hit;
-        if (Physics.Raycast (mainCam.transform.position, mainCam.transform.forward, out hit, stabRange))
+        
+        if (Physics.Raycast(mainCam.transform.position, mainCam.transform.forward, out hit, stabRange, mask))
         {
-            
+
             if (hit.transform.tag == "Fish")
             {
+                Debug.Log("struck a " + hit.transform.gameObject.name);
                 Destroy(hit.transform.gameObject);
             }
             else
             {
                 Debug.Log("struck a " + hit.transform.gameObject.name);
-            }            
-        }        
+            }
+        }
     }
 
     private void Throw()
-    {        
+    {
         Debug.Log("Throwing");
         spear.transform.position = player.GetComponent<PlayerView1stPerson>().mainCam.transform.position;
         spear.transform.rotation = player.GetComponent<PlayerView1stPerson>().mainCam.transform.rotation;
@@ -131,5 +142,5 @@ public class HoldSpear : MonoBehaviour
 
         PlayerPrefs.SetInt("HasSpear", 0);
         holding = false;
-    }    
+    }
 }
