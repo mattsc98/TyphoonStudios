@@ -34,7 +34,7 @@ public class SpawnFish : MonoBehaviour
                 {
                     currentFish++;
                     time = 0f;
-                    Instantiate(fishSpot,new Vector3(100f,100f,100f),Quaternion.identity);
+                    Instantiate(fishSpot,new Vector3(-1f,-1f,13f),Quaternion.identity);
                 }
                 else
                 {
